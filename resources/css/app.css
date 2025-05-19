@@ -9,3 +9,9 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Nadpisanie stylów ikon */
+svg.h-3, svg.h-4, svg.h-5, svg.h-6, svg.h-8, svg.h-10 {
+    width: 12px !important;
+    height: 12px !important;
+}
