@@ -15,30 +15,112 @@
             </div>
           </div>
           <div class="flex space-x-6 ml-auto">
-            <button @click="showLoginModal = true" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-none shadow-md hover:shadow-lg transition-all duration-300 text-sm font-medium flex items-center no-underline">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-              </svg>
-              Logowanie
-            </button>
-            <button @click="showRegisterModal = true" class="px-5 py-2.5 bg-transparent hover:bg-gray-800 text-white border border-blue-500 hover:border-blue-600 rounded-none shadow-md hover:shadow-lg transition-all duration-300 text-sm font-medium flex items-center no-underline">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
-              Rejestracja
-            </button>
+            <!-- Przyciski dla niezalogowanych użytkowników -->
+            <div v-if="!isLoggedIn" class="flex space-x-6">
+              <button @click="showLoginModal = true" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-none shadow-md hover:shadow-lg transition-all duration-300 text-sm font-medium flex items-center no-underline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Logowanie
+              </button>
+              <button @click="showRegisterModal = true" class="px-5 py-2.5 bg-transparent hover:bg-gray-800 text-white border border-blue-500 hover:border-blue-600 rounded-none shadow-md hover:shadow-lg transition-all duration-300 text-sm font-medium flex items-center no-underline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                Rejestracja
+              </button>
+            </div>
+            
+            <!-- Przyciski dla zalogowanych użytkowników -->
+            <div v-else class="flex space-x-6 items-center">
+              <div class="text-white">
+                Witaj, <span class="font-medium">{{ currentUser.name }}</span>
+              </div>
+              <button @click="logout" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-none shadow-md hover:shadow-lg transition-all duration-300 text-sm font-medium flex items-center no-underline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Wyloguj
+              </button>
+            </div>
           </div>
         </div>
 
       </nav>
   
-      <!-- Hero section -->
-      <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 py-16">
+      <!-- Hero section dla niezalogowanych -->
+      <div v-if="!isLoggedIn" class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 py-16">
         <div class="max-w-7xl mx-auto px-6">
           <h1 class="text-4xl md:text-5xl font-bold mb-4">Profesjonalne przestrzenie biurowe</h1>
           <p class="text-xl text-gray-300 max-w-2xl">
             Odkryj idealne miejsce dla Twojego biznesu w centrum miasta. Nowoczesne, w pełni wyposażone biura gotowe do wynajęcia.
           </p>
+        </div>
+      </div>
+      
+      <!-- Panel użytkownika po zalogowaniu -->
+      <div v-else class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="bg-gray-800/70 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+            <div class="p-6 border-b border-gray-700">
+              <h2 class="text-2xl font-bold text-white flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Panel użytkownika
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <div class="mb-6">
+                    <h3 class="text-lg font-medium text-gray-300 mb-4">Twoje dane</h3>
+                    <div class="space-y-3">
+                      <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span>Imię i nazwisko: <span class="text-white font-medium">{{ currentUser.name }}</span></span>
+                      </div>
+                      <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span>Email: <span class="text-white font-medium">{{ currentUser.email }}</span></span>
+                      </div>
+                      <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>Data rejestracji: <span class="text-white font-medium">{{ new Date(currentUser.created_at).toLocaleDateString('pl-PL') }}</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <div class="bg-gray-900/60 p-6 rounded-lg border border-gray-700">
+                    <h3 class="text-lg font-medium text-white mb-4">Twoje biura</h3>
+                    <div v-if="false" class="space-y-4">
+                      <!-- Tu będzie lista wynajętych biur -->
+                    </div>
+                    <div v-else class="text-center py-8">
+                      <div class="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <h4 class="text-xl font-medium text-blue-400 mb-2">Brak wynajętych biur</h4>
+                      <p class="text-gray-400 text-sm mb-4">Nie masz jeszcze wynajętych biur. Przeglądaj dostępne biura poniżej.</p>
+                      <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 w-full">
+                        Przeglądaj biura
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
   
@@ -345,11 +427,11 @@
               <div class="space-y-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                  <input type="email" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="twoj@email.com" required />
+                  <input v-model="loginData.email" type="email" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="twoj@email.com" required />
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-300 mb-1">Hasło</label>
-                  <input type="password" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••" required />
+                  <input v-model="loginData.password" type="password" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••" required />
                 </div>
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
@@ -543,11 +625,19 @@
   </template>
   
   <script setup>
-  import { ref, watch } from 'vue'
+  import { ref, watch, onMounted } from 'vue'
   import axios from 'axios'
+
+  // Konfiguracja axios
+  axios.defaults.withCredentials = true
+  axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
   // Mobile menu state removed
   
+  // Auth states
+  const isLoggedIn = ref(false)
+  const currentUser = ref(null)
+
   // Modal states
   const showSuccessModal = ref(false)
   const showLoginModal = ref(false)
@@ -669,11 +759,27 @@
     try {
       const response = await axios.post('/api/login', loginData.value)
       console.log('Zalogowano:', response.data)
+      currentUser.value = response.data.user
+      isLoggedIn.value = true
       showLoginModal.value = false
+      // Resetujemy dane formularza logowania
+      loginData.value = { email: '', password: '' }
     } catch (error) {
       console.error('Błąd logowania:', error.response.data)
+      alert('Błąd logowania: ' + (error.response?.data?.message || 'Nieprawidłowe dane logowania'))
     }
   }
+  // Logout function
+  async function logout() {
+    try {
+      await axios.post('/api/logout')
+      currentUser.value = null
+      isLoggedIn.value = false
+    } catch (error) {
+      console.error('Błąd wylogowania:', error)
+    }
+  }
+
   // Forgot password function
   function forgotPassword() {
     showLoginModal.value = false
@@ -748,6 +854,25 @@
     }, 300)
   }
   
+  // Check if user is logged in on page load
+  async function checkAuth() {
+    try {
+      const response = await axios.get('/api/user')
+      if (response.data) {
+        currentUser.value = response.data
+        isLoggedIn.value = true
+      }
+    } catch (error) {
+      console.error('Nie zalogowano:', error)
+      isLoggedIn.value = false
+    }
+  }
+
+  // Call checkAuth on component mount
+  onMounted(() => {
+    checkAuth()
+  })
+
   // Watch for modal changes
   watch(showLoginModal, watchModals)
   watch(showRegisterModal, watchModals)
