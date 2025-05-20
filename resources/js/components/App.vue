@@ -101,8 +101,24 @@
                 <div>
                   <div class="bg-gray-900/60 p-6 rounded-lg border border-gray-700">
                     <h3 class="text-lg font-medium text-white mb-4">Twoje biura</h3>
-                    <div v-if="false" class="space-y-4">
-                      <!-- Tu będzie lista wynajętych biur -->
+                    <div v-if="userOffices.length > 0" class="space-y-4">
+                      <div v-for="officeId in userOffices" :key="officeId" class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                        <div class="flex justify-between items-center mb-2">
+                          <h4 class="font-medium text-white">{{ getOfficeById(officeId)?.name }}</h4>
+                          <span class="bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded-full text-xs">Wynajęte</span>
+                        </div>
+                        <div class="text-sm text-gray-400 mb-2">
+                          <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5" />
+                            </svg>
+                            {{ getOfficeById(officeId)?.size }} m²
+                          </div>
+                        </div>
+                        <button @click="selectOfficeById(officeId)" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-md transition duration-300 text-sm">
+                          Szczegóły
+                        </button>
+                      </div>
                     </div>
                     <div v-else class="text-center py-8">
                       <div class="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mx-auto mb-4">
@@ -112,7 +128,7 @@
                       </div>
                       <h4 class="text-xl font-medium text-blue-400 mb-2">Brak wynajętych biur</h4>
                       <p class="text-gray-400 text-sm mb-4">Nie masz jeszcze wynajętych biur. Przeglądaj dostępne biura poniżej.</p>
-                      <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 w-full">
+                      <button @click="scrollToOffices" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 w-full">
                         Przeglądaj biura
                       </button>
                     </div>
@@ -245,41 +261,58 @@
               </div>
               
               <div>
-                <div class="bg-gray-900/60 p-6 rounded-lg border border-gray-700 h-full">
+                <div class="bg-gray-900/60 p-6 rounded-lg border border-gray-700">
                   <h3 class="text-lg font-medium text-white mb-4">Zapytaj o dostępność</h3>
-                  <div v-if="!selectedOffice.isRented">
-                    <div class="space-y-4">
-                      <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1">Imię i nazwisko</label>
-                        <input type="text" class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Jan Kowalski" />
-                      </div>
-                      <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                        <input type="email" class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="jan.kowalski@example.com" />
-                      </div>
-                      <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1">Telefon</label>
-                        <input type="tel" class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="+48 123 456 789" />
-                      </div>
-                      <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-1">Data rozpoczęcia</label>
-                        <input type="date" class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                      </div>
-                      <button @click="rentOffice" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 border border-gray-700">
-                        Wyślij zapytanie
-                      </button>
+                  <!-- Biuro dostępne - niezalogowany użytkownik -->
+                  <div v-if="!selectedOffice.isRented && !isLoggedIn" class="flex flex-col items-center justify-center text-center space-y-3 py-4">
+                    <div class="w-16 h-16 rounded-full bg-emerald-600/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                     </div>
+                    <h4 class="text-xl font-medium text-emerald-400">Biuro dostępne</h4>
+                    <p class="text-gray-400 text-sm mb-2">Zaloguj się, aby wynająć to biuro.</p>
+                    <button @click="showLoginModal = true" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+                      Zaloguj się
+                    </button>
                   </div>
-                  <div v-else class="flex flex-col items-center justify-center h-full text-center space-y-3 py-2">
+                  
+                  <!-- Biuro dostępne - zalogowany użytkownik -->
+                  <div v-if="!selectedOffice.isRented && isLoggedIn" class="flex flex-col items-center justify-center text-center space-y-3 py-4">
+                    <div class="w-16 h-16 rounded-full bg-emerald-600/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h4 class="text-xl font-medium text-emerald-400">Biuro dostępne</h4>
+                    <p class="text-gray-400 text-sm mb-2">Kliknij poniżej, aby wynająć to biuro.</p>
+                    <button @click="rentOffice" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+                      Wynajmij biuro
+                    </button>
+                  </div>
+                  
+                  <!-- Biuro zajęte - niezalogowany lub nie jest właścicielem -->
+                  <div v-if="selectedOffice.isRented && (!isLoggedIn || !userOffices.includes(selectedOffice.id))" class="flex flex-col items-center justify-center text-center space-y-3 py-4">
                     <div class="w-16 h-16 rounded-full bg-red-600/20 flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
                     <h4 class="text-xl font-medium text-red-400">Biuro obecnie zajęte</h4>
                     <p class="text-gray-400 text-sm">To biuro jest obecnie wynajęte. Sprawdź inne dostępne biura lub skontaktuj się z nami.</p>
-                    <button class="bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 border border-gray-700 w-full mx-auto mb-4">
-                      Zapytaj o dostępność
+                  </div>
+                  
+                  <!-- Biuro zajęte - zalogowany i jest właścicielem -->
+                  <div v-if="selectedOffice.isRented && isLoggedIn && userOffices.includes(selectedOffice.id)" class="flex flex-col items-center justify-center text-center space-y-3 py-4">
+                    <div class="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h4 class="text-xl font-medium text-blue-400">Twoje biuro</h4>
+                    <p class="text-gray-400 text-sm mb-2">To biuro jest obecnie wynajęte przez Ciebie.</p>
+                    <button @click="releaseOffice" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">
+                      Zwolnij biuro
                     </button>
                   </div>
                 </div>
@@ -288,7 +321,7 @@
           </div>
   
           <!-- Available offices grid -->
-          <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+          <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 overflow-hidden available-offices-section">
             <div class="p-6 border-b border-gray-700">
               <h2 class="text-2xl font-bold text-white flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -438,7 +471,7 @@
                     <input type="checkbox" id="remember" class="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-600 rounded checkbox-input" />
                     <label for="remember" class="ml-2 block text-sm text-gray-300">Zapamiętaj mnie</label>
                   </div>
-                  <button @click="forgotPassword" class="text-sm text-blue-400 hover:text-blue-300">Zapomniałeś hasła?</button>
+                  <button type="button" @click="forgotPassword" class="text-sm text-blue-400 hover:text-blue-300">Zapomniałeś hasła?</button>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 modal-submit-btn">
                   Zaloguj się
@@ -614,7 +647,7 @@
               Twoje konto zostało pomyślnie utworzone. Możesz teraz zalogować się i korzystać ze wszystkich funkcji naszej platformy.
             </p>
             <div class="flex justify-center">
-              <button @click="switchFromRegistrationSuccessToLogin" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition duration-300">
+              <button type="button" @click="switchFromRegistrationSuccessToLogin" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition duration-300">
                 Przejdź do logowania
               </button>
             </div>
@@ -655,81 +688,67 @@
   const loginData = ref({ email: '', password: '' })
   const registerData = ref({ name: '', email: '', password: '', password_confirmation: '' })
 
-  // Enhanced office data
-  const offices = ref([
-    { 
-      id: 1, 
-      name: 'Biuro A', 
-      x: 14, 
-      y: 15, 
-      isRented: false,
-      size: 12,
-      capacity: 6,
-      floor: 1,
-      price: 900,
-      amenities: ['Internet światłowodowy', 'Klimatyzacja', 'Dostęp 24/7', 'Meble biurowe', 'Sala konferencyjna', 'Kuchnia']
-    },
-    { 
-      id: 2, 
-      name: 'Biuro B', 
-      x: 32, 
-      y: 15, 
-      isRented: true,
-      size: 6,
-      capacity: 3,
-      floor: 1,
-      price: 480,
-      amenities: ['Internet światłowodowy', 'Klimatyzacja', 'Dostęp 24/7', 'Meble biurowe', 'Sala konferencyjna', 'Kuchnia', 'Monitoring']
-    },
-    { 
-      id: 3, 
-      name: 'Biuro C', 
-      x: 55, 
-      y: 15, 
-      isRented: false,
-      size: 18,
-      capacity: 9,
-      floor: 1,
-      price: 1260,
-      amenities: ['Internet światłowodowy', 'Klimatyzacja', 'Dostęp 24/7', 'Meble biurowe', 'Kuchnia']
-    },
-    { 
-      id: 4, 
-      name: 'Biuro D', 
-      x: 27, 
-      y: 70, 
-      isRented: false,
-      size: 11,
-      capacity: 5,
-      floor: 1,
-      price: 880,
-      amenities: ['Internet światłowodowy', 'Klimatyzacja', 'Dostęp 24/7', 'Meble biurowe', 'Sala konferencyjna', 'Kuchnia', 'Recepcja']
-    },
-    { 
-      id: 5, 
-      name: 'Biuro E', 
-      x: 55, 
-      y: 70, 
-      isRented: true,
-      size: 17,
-      capacity: 8,
-      floor: 1,
-      price: 1190,
-      amenities: ['Internet światłowodowy', 'Klimatyzacja', 'Dostęp 24/7', 'Meble biurowe']
-    },
-    { 
-      id: 6, 
-      name: 'Biuro F', 
-      x: 85, 
-      y: 70, 
-      isRented: false,
-      size: 13,
-      capacity: 6,
-      floor: 1,
-      price: 1040,
-      amenities: ['Internet światłowodowy', 'Klimatyzacja', 'Dostęp 24/7', 'Meble biurowe', 'Sala konferencyjna', 'Kuchnia', 'Parking']
-    },
-  ])
+  // Office data
+  const offices = ref([])
+  const userOffices = ref([])
+  
+  // Fetch offices from API
+  async function fetchOffices() {
+    try {
+      const response = await axios.get('/api/offices')
+      // Map API response to match our frontend structure
+      offices.value = response.data.map(office => ({
+        id: office.id,
+        name: office.name,
+        x: office.x,
+        y: office.y,
+        isRented: office.is_rented,
+        size: office.size,
+        capacity: office.capacity,
+        floor: office.floor,
+        price: office.price,
+        amenities: office.amenities || []
+      }))
+    } catch (error) {
+      console.error('Błąd pobierania biur:', error)
+    }
+  }
+  
+  // Fetch user's rented offices
+  async function fetchUserOffices() {
+    if (!isLoggedIn.value) return
+    
+    try {
+      const response = await axios.get('/api/user/offices')
+      userOffices.value = response.data.map(office => office.id)
+    } catch (error) {
+      console.error('Błąd pobierania biur użytkownika:', error)
+    }
+  }
+  
+  // Helper function to get office by ID
+  function getOfficeById(id) {
+    return offices.value.find(office => office.id === id)
+  }
+  
+  // Helper function to select office by ID
+  function selectOfficeById(id) {
+    const office = getOfficeById(id)
+    if (office) {
+      selectOffice(office)
+    }
+  }
+  
+  // Function to scroll to offices section
+  function scrollToOffices() {
+    const officesSection = document.querySelector('.available-offices-section')
+    if (officesSection) {
+      window.scrollTo({
+        top: officesSection.offsetTop - 80,
+        behavior: 'smooth'
+      })
+    }
+  }
   
   // Select office function
   function selectOffice(office) {
@@ -747,10 +766,68 @@
   }
   
   // Rent office function
-  function rentOffice() {
+  async function rentOffice() {
+    if (!isLoggedIn.value) {
+      showLoginModal.value = true
+      return
+    }
+    
     if (selectedOffice.value && !selectedOffice.value.isRented) {
-      selectedOffice.value.isRented = true
-      showSuccessModal.value = true
+      try {
+        const response = await axios.post(`/api/offices/${selectedOffice.value.id}/rent`, {
+          start_date: new Date().toISOString().split('T')[0] // Dzisiejsza data w formacie YYYY-MM-DD
+        })
+        
+        // Aktualizuj status biura
+        selectedOffice.value.isRented = true
+        
+        // Aktualizuj listę biur
+        const officeIndex = offices.value.findIndex(o => o.id === selectedOffice.value.id)
+        if (officeIndex !== -1) {
+          offices.value[officeIndex].isRented = true
+        }
+        
+        // Dodaj biuro do listy biur użytkownika
+        userOffices.value.push(selectedOffice.value.id)
+        
+        showSuccessModal.value = true
+      } catch (error) {
+        console.error('Błąd wynajmowania biura:', error)
+        alert('Wystąpił błąd podczas wynajmowania biura. Spróbuj ponownie.')
+      }
+    }
+  }
+  
+  // Release office function
+  async function releaseOffice() {
+    if (!isLoggedIn.value) {
+      return
+    }
+    
+    if (selectedOffice.value && selectedOffice.value.isRented) {
+      try {
+        const response = await axios.post(`/api/offices/${selectedOffice.value.id}/release`)
+        
+        // Aktualizuj status biura
+        selectedOffice.value.isRented = false
+        
+        // Aktualizuj listę biur
+        const officeIndex = offices.value.findIndex(o => o.id === selectedOffice.value.id)
+        if (officeIndex !== -1) {
+          offices.value[officeIndex].isRented = false
+        }
+        
+        // Usuń biuro z listy biur użytkownika
+        const userOfficeIndex = userOffices.value.indexOf(selectedOffice.value.id)
+        if (userOfficeIndex !== -1) {
+          userOffices.value.splice(userOfficeIndex, 1)
+        }
+        
+        alert('Biuro zostało pomyślnie zwolnione.')
+      } catch (error) {
+        console.error('Błąd zwalniania biura:', error)
+        alert('Wystąpił błąd podczas zwalniania biura. Spróbuj ponownie.')
+      }
     }
   }
   
@@ -868,9 +945,17 @@
     }
   }
 
-  // Call checkAuth on component mount
+  // Call functions on component mount
   onMounted(() => {
     checkAuth()
+    fetchOffices()
+  })
+
+  // Watch for login state changes to fetch user offices
+  watch(isLoggedIn, (newValue) => {
+    if (newValue) {
+      fetchUserOffices()
+    }
   })
 
   // Watch for modal changes

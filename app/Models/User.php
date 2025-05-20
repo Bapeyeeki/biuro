@@ -11,6 +11,22 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    
+    /**
+     * Get the reservations for the user.
+     */
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+    
+    /**
+     * Get the active reservations for the user.
+     */
+    public function activeReservations()
+    {
+        return $this->reservations()->where('is_active', true)->get();
+    }
 
     /**
      * The attributes that are mass assignable.
