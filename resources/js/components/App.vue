@@ -1,4 +1,5 @@
 <template>
+  
     <div class="font-sans min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
       <!-- Navigation -->
       <nav class="bg-black/70 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-50 shadow-lg">
@@ -57,7 +58,7 @@
             <div class="relative p-4">
               <div class="rounded-lg overflow-hidden">
                 <img
-                  src="/Arris.png"
+                  src="/public/Arris.png"
                   alt="Plan biura"
                   class="w-full h-auto object-contain"
                 />
@@ -561,7 +562,8 @@
   
   <script setup>
   import { ref, watch } from 'vue'
-  
+  import axios from 'axios'
+
   // Mobile menu state removed
   
   // Modal states
@@ -578,7 +580,9 @@
   const password = ref('')
   const confirmPassword = ref('')
   const passwordsMatch = ref(true)
-  
+  const loginData = ref({ email: '', password: '' })
+  const registerData = ref({ name: '', email: '', password: '', password_confirmation: '' })
+
   // Enhanced office data
   const offices = ref([
     { 
@@ -679,14 +683,15 @@
   }
   
   // Login function
-  function login() {
-    // In a real app, this would authenticate the user
-    showLoginModal.value = false
-    document.body.style.overflow = 'auto' // Odblokuj przewijanie
-    // Here you would handle the login logic
-    console.log('User logged in')
+  async function login() {
+    try {
+      const response = await axios.post('/api/login', loginData.value)
+      console.log('Zalogowano:', response.data)
+      showLoginModal.value = false
+    } catch (error) {
+      console.error('Błąd logowania:', error.response.data)
+    }
   }
-  
   // Forgot password function
   function forgotPassword() {
     showLoginModal.value = false
@@ -711,27 +716,16 @@
   }
   
   // Register function
-  function register() {
-    // Sprawdź, czy hasła się zgadzają
-    if (!checkPasswordsMatch()) {
-      return // Przerwij rejestrację, jeśli hasła się nie zgadzają
-    }
-    
-    // In a real app, this would register a new user
+  async function register() {
+  try {
+    const response = await axios.post('/api/register', registerData.value)
+    console.log('Zarejestrowano:', response.data)
     showRegisterModal.value = false
-    // Here you would handle the registration logic
-    console.log('User registered')
-    
-    // Reset form data
-    password.value = ''
-    confirmPassword.value = ''
-    passwordsMatch.value = true
-    
-    // Pokaż komunikat o sukcesie
-    setTimeout(() => {
-      showRegistrationSuccessModal.value = true
-    }, 300)
+    showRegistrationSuccessModal.value = true
+  } catch (error) {
+    console.error('Błąd rejestracji:', error.response?.data || error.message)
   }
+}
   
   // Watch modals to toggle body scroll
   function watchModals() {
@@ -922,10 +916,6 @@ nav {
   border-radius: 0.375rem;
 }
 
-.hover\\:bg-blue-600\\/20:hover {
-  background-color: rgba(37, 99, 235, 0.2);
-}
-
 .transition {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -944,14 +934,6 @@ nav {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 
-.from-blue-900\\/30 {
-  --tw-gradient-from: rgba(30, 58, 138, 0.3);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(30, 58, 138, 0));
-}
-
-.to-purple-900\\/30 {
-  --tw-gradient-to: rgba(88, 28, 135, 0.3);
-}
 
 .py-16 {
   padding-top: 3rem;
@@ -988,10 +970,6 @@ nav {
 
 .mb-12 {
   margin-bottom: 2rem;
-}
-
-.bg-gray-800\\/50 {
-  background-color: rgba(31, 41, 55, 0.5);
 }
 
 .rounded-xl {
@@ -1078,10 +1056,6 @@ nav {
   gap: 1rem;
 }
 
-.bg-gray-900\\/60 {
-  background-color: rgba(17, 24, 39, 0.6);
-}
-
 .hover\\:border-blue-500:hover {
   border-color: #3b82f6;
 }
@@ -1122,9 +1096,7 @@ nav {
   border-radius: 9999px;
 }
 
-.bg-red-600\\/20 {
-  background-color: rgba(220, 38, 38, 0.2);
-}
+
 
 .h-8 {
   height: 2rem;
@@ -1138,9 +1110,7 @@ nav {
   color: #f87171;
 }
 
-.bg-emerald-600\\/20 {
-  background-color: rgba(5, 150, 105, 0.2);
-}
+
 
 .text-emerald-400 {
   color: #34d399;
