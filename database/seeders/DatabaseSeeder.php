@@ -13,11 +13,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Tworzenie użytkowników testowych
+        User::factory()->create([
+            'name' => 'Jan Kowalski',
+            'email' => 'jan@example.com',
+            'password' => bcrypt('password'),
+        ]);
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Anna Nowak',
+            'email' => 'anna@example.com',
+            'password' => bcrypt('password'),
         ]);
+        
+        // Wywołanie seedera biur
+        $this->call(OfficeSeeder::class);
     }
 }
