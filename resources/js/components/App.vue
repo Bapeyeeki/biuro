@@ -95,6 +95,15 @@
                         <span>Data rejestracji: <span class="text-white font-medium">{{ new Date(currentUser.created_at).toLocaleDateString('pl-PL') }}</span></span>
                       </div>
                     </div>
+                    
+                    <div class="mt-6">
+                      <button @click="openRentalHistory" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Historia wynajmów
+                      </button>
+                    </div>
                   </div>
                 </div>
                 
@@ -654,6 +663,153 @@
           </div>
         </div>
       </div>
+      
+      <!-- Historia wynajmów Modal -->
+      <div v-if="showRentalHistoryModal" class="modal-backdrop">
+        <div class="modal-container bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full border border-gray-700 overflow-hidden animate-fade-in-up">
+          <div class="p-6 border-b border-gray-700 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-white flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Historia wynajmów
+            </h3>
+            <button @click="showRentalHistoryModal = false" class="text-gray-400 hover:text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-6">
+            <div v-if="userRentalHistory.length > 0">
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-900 border border-gray-700 rounded-lg">
+                  <thead>
+                    <tr>
+                      <th class="py-3 px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider border-b border-gray-700">Biuro</th>
+                      <th class="py-3 px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider border-b border-gray-700">Data rozpoczęcia</th>
+                      <th class="py-3 px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider border-b border-gray-700">Data zakończenia</th>
+                      <th class="py-3 px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider border-b border-gray-700">Status</th>
+                      <th class="py-3 px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider border-b border-gray-700">Cena</th>
+                      <th class="py-3 px-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider border-b border-gray-700">Akcje</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-700">
+                    <tr v-for="rental in userRentalHistory" :key="rental.id" class="hover:bg-gray-800">
+                      <td class="py-4 px-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-white">{{ getOfficeById(rental.officeId)?.name || 'Biuro #' + rental.officeId }}</div>
+                        <div class="text-xs text-gray-400">{{ getOfficeById(rental.officeId)?.size || '-' }} m²</div>
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-300">
+                        {{ formatDate(rental.startDate) }}
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-300">
+                        {{ formatDate(rental.endDate) }}
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">
+                        <span :class="[
+                          'px-2 py-1 text-xs font-medium rounded-full',
+                          rental.status === 'active' ? 'bg-emerald-600/20 text-emerald-400' : 'bg-gray-600/20 text-gray-400'
+                        ]">
+                          {{ rental.status === 'active' ? 'Aktywny' : 'Zakończony' }}
+                        </span>
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-300">
+                        {{ rental.price }} zł / miesiąc
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap text-sm">
+                        <button 
+                          v-if="rental.status === 'active'"
+                          @click="endRentalEarly(rental.id)" 
+                          class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-xs"
+                        >
+                          Zakończ najem
+                        </button>
+                        <span v-else class="text-gray-500">-</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div v-else class="text-center py-8">
+              <div class="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h4 class="text-xl font-medium text-blue-400 mb-2">Brak historii wynajmów</h4>
+              <p class="text-gray-400 text-sm mb-4">Nie masz jeszcze żadnych wynajmów w historii.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Kalendarz rezerwacji Modal -->
+      <div v-if="showRentalCalendar" class="modal-backdrop">
+        <div class="modal-container bg-gray-800 rounded-lg shadow-xl max-w-md w-full border border-gray-700 overflow-hidden animate-fade-in-up">
+          <div class="p-6 border-b border-gray-700 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-white flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Wybierz termin wynajmu
+            </h3>
+            <button @click="showRentalCalendar = false" class="text-gray-400 hover:text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-6">
+            <div class="mb-6">
+              <h4 class="text-lg font-medium text-white mb-2">{{ selectedOffice?.name }}</h4>
+              <p class="text-gray-400 text-sm">Wybierz datę rozpoczęcia i opcjonalnie datę zakończenia najmu.</p>
+            </div>
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-1">Data rozpoczęcia *</label>
+                <input 
+                  v-model="selectedDateRange.start" 
+                  type="date" 
+                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                  :min="new Date().toISOString().split('T')[0]"
+                  required 
+                />
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-1">Data zakończenia (opcjonalnie)</label>
+                <input 
+                  v-model="selectedDateRange.end" 
+                  type="date" 
+                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                  :min="selectedDateRange.start || new Date().toISOString().split('T')[0]"
+                />
+                <p class="text-xs text-gray-400 mt-1">Pozostaw puste dla wynajmu bezterminowego.</p>
+              </div>
+              
+              <div class="pt-4">
+                <button 
+                  @click="confirmRental" 
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
+                  :disabled="!selectedDateRange.start"
+                  :class="{'opacity-50 cursor-not-allowed': !selectedDateRange.start}"
+                >
+                  Potwierdź wynajem
+                </button>
+                <button 
+                  @click="showRentalCalendar = false" 
+                  class="w-full mt-2 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition duration-300"
+                >
+                  Anuluj
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </template>
   
@@ -691,6 +847,10 @@
   // Office data
   const offices = ref([])
   const userOffices = ref([])
+  const userRentalHistory = ref([])
+  const showRentalCalendar = ref(false)
+  const selectedDateRange = ref({ start: null, end: null })
+  const showRentalHistoryModal = ref(false)
   
   // Fetch offices from API
   async function fetchOffices() {
@@ -721,8 +881,41 @@
     try {
       const response = await axios.get('/api/user/offices')
       userOffices.value = response.data.map(office => office.id)
+      
+      // Pobierz również historię wynajmów
+      await fetchRentalHistory()
     } catch (error) {
       console.error('Błąd pobierania biur użytkownika:', error)
+    }
+  }
+  
+  // Fetch rental history
+  async function fetchRentalHistory() {
+    if (!isLoggedIn.value) return
+    
+    try {
+      // W rzeczywistej aplikacji to byłoby pobierane z API
+      // Tutaj symulujemy dane dla demonstracji
+      userRentalHistory.value = [
+        {
+          id: 1,
+          officeId: userOffices.value[0] || 1,
+          startDate: '2024-01-15',
+          endDate: '2024-07-15',
+          status: 'active',
+          price: 2500
+        },
+        {
+          id: 2,
+          officeId: 3,
+          startDate: '2023-06-01',
+          endDate: '2023-12-31',
+          status: 'completed',
+          price: 3200
+        }
+      ]
+    } catch (error) {
+      console.error('Błąd pobierania historii wynajmów:', error)
     }
   }
   
@@ -750,6 +943,19 @@
     }
   }
   
+  // Format date helper
+  function formatDate(dateString) {
+    if (!dateString) return 'Bezterminowo'
+    
+    const date = new Date(dateString)
+    return date.toLocaleDateString('pl-PL')
+  }
+  
+  // Open rental history modal
+  function openRentalHistory() {
+    showRentalHistoryModal.value = true
+  }
+  
   // Select office function
   function selectOffice(office) {
     selectedOffice.value = office
@@ -773,28 +979,87 @@
     }
     
     if (selectedOffice.value && !selectedOffice.value.isRented) {
-      try {
-        const response = await axios.post(`/api/offices/${selectedOffice.value.id}/rent`, {
-          start_date: new Date().toISOString().split('T')[0] // Dzisiejsza data w formacie YYYY-MM-DD
-        })
+      // Pokaż kalendarz do wyboru daty
+      showRentalCalendar.value = true
+      return
+    }
+  }
+  
+  // Confirm rental with date range
+  async function confirmRental() {
+    if (!selectedOffice.value || !selectedDateRange.value.start) return
+    
+    try {
+      // W rzeczywistej aplikacji wysłalibyśmy te dane do API
+      const startDate = selectedDateRange.value.start
+      const endDate = selectedDateRange.value.end || null
+      
+      const response = await axios.post(`/api/offices/${selectedOffice.value.id}/rent`, {
+        start_date: startDate,
+        end_date: endDate
+      })
+      
+      // Aktualizuj status biura
+      selectedOffice.value.isRented = true
+      
+      // Aktualizuj listę biur
+      const officeIndex = offices.value.findIndex(o => o.id === selectedOffice.value.id)
+      if (officeIndex !== -1) {
+        offices.value[officeIndex].isRented = true
+      }
+      
+      // Dodaj biuro do listy biur użytkownika
+      userOffices.value.push(selectedOffice.value.id)
+      
+      // Dodaj do historii wynajmów
+      userRentalHistory.value.push({
+        id: Date.now(), // Tymczasowe ID
+        officeId: selectedOffice.value.id,
+        startDate: startDate,
+        endDate: endDate,
+        status: 'active',
+        price: selectedOffice.value.price || 2000
+      })
+      
+      // Zamknij kalendarz i pokaż komunikat o sukcesie
+      showRentalCalendar.value = false
+      showSuccessModal.value = true
+    } catch (error) {
+      console.error('Błąd wynajmowania biura:', error)
+      alert('Wystąpił błąd podczas wynajmowania biura. Spróbuj ponownie.')
+    }
+  }
+  
+  // End rental early
+  async function endRentalEarly(rentalId) {
+    try {
+      // W rzeczywistej aplikacji wysłalibyśmy te dane do API
+      const rentalIndex = userRentalHistory.value.findIndex(r => r.id === rentalId)
+      
+      if (rentalIndex !== -1) {
+        // Aktualizuj status najmu
+        userRentalHistory.value[rentalIndex].status = 'completed'
+        userRentalHistory.value[rentalIndex].endDate = new Date().toISOString().split('T')[0]
         
-        // Aktualizuj status biura
-        selectedOffice.value.isRented = true
+        // Jeśli to aktualnie wynajęte biuro, zaktualizuj jego status
+        const officeId = userRentalHistory.value[rentalIndex].officeId
+        const officeIndex = offices.value.findIndex(o => o.id === officeId)
         
-        // Aktualizuj listę biur
-        const officeIndex = offices.value.findIndex(o => o.id === selectedOffice.value.id)
         if (officeIndex !== -1) {
-          offices.value[officeIndex].isRented = true
+          offices.value[officeIndex].isRented = false
         }
         
-        // Dodaj biuro do listy biur użytkownika
-        userOffices.value.push(selectedOffice.value.id)
+        // Usuń z listy aktywnych biur użytkownika
+        const userOfficeIndex = userOffices.value.indexOf(officeId)
+        if (userOfficeIndex !== -1) {
+          userOffices.value.splice(userOfficeIndex, 1)
+        }
         
-        showSuccessModal.value = true
-      } catch (error) {
-        console.error('Błąd wynajmowania biura:', error)
-        alert('Wystąpił błąd podczas wynajmowania biura. Spróbuj ponownie.')
+        alert('Najem został zakończony wcześniej.')
       }
+    } catch (error) {
+      console.error('Błąd kończenia najmu:', error)
+      alert('Wystąpił błąd podczas kończenia najmu. Spróbuj ponownie.')
     }
   }
   
