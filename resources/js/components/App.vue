@@ -282,8 +282,8 @@
       </div>
     </main>
 
-        <!-- Sekcja FAQ -->
-        <section class="max-w-7xl mx-auto my-12 px-6 flex justify-center">
+    <!-- Sekcja FAQ -->
+    <section class="max-w-7xl mx-auto my-12 px-6 flex justify-center">
       <div class="w-full max-w-3xl">
         <h2 class="text-2xl font-bold text-white mb-6 flex items-center justify-center">
           Najczęściej zadawane pytania (FAQ)
@@ -339,7 +339,7 @@
               </a>
               <a href="#" class="text-gray-400 hover:text-blue-400 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                 </svg>
               </a>
             </div>
@@ -522,7 +522,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
               </svg>
-            </div>
+              </div>
           </div>
           <h3 class="text-2xl font-bold text-center text-white mb-2">Dziękujemy!</h3>
           <p class="text-gray-300 text-center mb-6">
@@ -688,9 +688,9 @@
         <div class="p-6 border-b border-gray-700 flex justify-between items-center">
           <h3 class="text-xl font-bold text-white flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            Wybierz godziny wynajmu
+            Wybierz przedział godzinowy
           </h3>
           <button @click="showRentalCalendar = false" class="text-gray-400 hover:text-white">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -701,37 +701,32 @@
         <div class="p-6">
           <div class="mb-6">
             <h4 class="text-lg font-medium text-white mb-2">{{ selectedOffice?.name }}</h4>
-            <p class="text-gray-400 text-sm">Wybierz godzinę rozpoczęcia i zakończenia najmu (tego samego dnia).</p>
+            <p class="text-gray-400 text-sm">Wybierz jeden z dostępnych przedziałów godzinowych lub cały dzień. Możesz także wybrać rezerwację cykliczną.</p>
           </div>
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-1">Godzina rozpoczęcia *</label>
-              <input 
-                v-model="selectedDateRange.start" 
-                type="time" 
-                class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                required 
-              />
+              <label class="block text-sm font-medium text-gray-300 mb-1">Przedział godzinowy *</label>
+              <select v-model="selectedSlotIndex" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                <option :value="null" disabled>Wybierz przedział</option>
+                <option v-for="(slot, idx) in timeSlots" :key="idx" :value="idx">
+                  {{ slot.start }} - {{ slot.end }}<span v-if="slot.start === '08:00' && slot.end === '18:00'"> (Cały dzień)</span>
+                </option>
+              </select>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-300 mb-1">Godzina zakończenia *</label>
-              <input 
-                v-model="selectedDateRange.end" 
-                type="time" 
-                class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                :min="selectedDateRange.start"
-                required 
-              />
-              <p class="text-xs text-gray-400 mt-1">Wynajem dotyczy wybranego dnia.</p>
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" v-model="recurring" id="recurring" class="checkbox-input" />
+              <label for="recurring" class="text-sm text-gray-300">Rezerwacja cykliczna</label>
+              <input v-if="recurring" type="number" min="2" max="30" v-model="recurringDays" class="ml-2 w-20 bg-gray-700 border border-gray-600 rounded-md px-2 py-1 text-white" />
+              <span v-if="recurring" class="text-xs text-gray-400 ml-2">dni</span>
             </div>
             <div class="pt-4">
               <button 
                 @click="confirmRental" 
                 class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
-                :disabled="!selectedDateRange.start || !selectedDateRange.end"
-                :class="{'opacity-50 cursor-not-allowed': !selectedDateRange.start || !selectedDateRange.end}"
+                :disabled="selectedSlotIndex === null"
+                :class="{'opacity-50 cursor-not-allowed': selectedSlotIndex === null}"
               >
-                Potwierdź wynajem
+                Potwierdź rezerwację
               </button>
               <button 
                 @click="showRentalCalendar = false" 
@@ -740,6 +735,15 @@
                 Anuluj
               </button>
             </div>
+          </div>
+          <div class="mt-6">
+            <h4 class="text-sm font-medium text-gray-300 mb-2">Zajęte godziny dzisiaj:</h4>
+            <ul v-if="Array.isArray(selectedOfficeReservations) && selectedOfficeReservations.length > 0" class="text-xs text-gray-400 space-y-1">
+              <li v-for="r in selectedOfficeReservations" :key="r.id">
+                {{ formatHour(r.start_date) }} - {{ formatHour(r.end_date) }}
+              </li>
+            </ul>
+            <span v-else class="text-xs text-gray-400">Brak rezerwacji na dziś.</span>
           </div>
         </div>
       </div>
@@ -770,6 +774,7 @@ const showRegistrationSuccessModal = ref(false)
 
 // Selected office
 const selectedOffice = ref(null)
+const selectedOfficeReservations = ref([])
 
 // Form data
 const password = ref('')
@@ -785,6 +790,31 @@ const userRentalHistory = ref([])
 const showRentalCalendar = ref(false)
 const selectedDateRange = ref({ start: null, end: null })
 const showRentalHistoryModal = ref(false)
+
+// Dodane: sloty godzinowe i cykliczność
+const timeSlots = ref([])
+const selectedSlotIndex = ref(null)
+const recurring = ref(false)
+const recurringDays = ref(2)
+
+// Pobierz sloty godzinowe z backendu
+async function fetchTimeSlots(officeId) {
+  try {
+    // Pobierz sloty dla konkretnego biura
+    const response = await axios.get(`/api/offices/${officeId}/timeslots`)
+    timeSlots.value = response.data
+  } catch (e) {
+    // fallback
+    timeSlots.value = [
+      { start: '08:00', end: '10:00' },
+      { start: '10:00', end: '12:00' },
+      { start: '12:00', end: '14:00' },
+      { start: '14:00', end: '16:00' },
+      { start: '16:00', end: '18:00' },
+      { start: '08:00', end: '18:00' }
+    ]
+  }
+}
 
 // Fetch offices from API
 async function fetchOffices() {
@@ -861,6 +891,16 @@ async function fetchRentalHistory() {
   }
 }
 
+// Fetch reservations for selected office (today)
+async function fetchOfficeReservations(officeId) {
+  try {
+    const response = await axios.get(`/api/offices/${officeId}/reservations`)
+    selectedOfficeReservations.value = response.data
+  } catch (error) {
+    selectedOfficeReservations.value = []
+  }
+}
+
 // Helper function to get office by ID
 function getOfficeById(id) {
   return offices.value.find(office => office.id === id)
@@ -888,9 +928,21 @@ function scrollToOffices() {
 // Format date helper
 function formatDate(dateString) {
   if (!dateString) return 'Bezterminowo'
-  
   const date = new Date(dateString)
+  if (dateString.length > 10) {
+    // datetime
+    return date.toLocaleString('pl-PL', { dateStyle: 'short', timeStyle: 'short' })
+  }
   return date.toLocaleDateString('pl-PL')
+}
+
+// Dodaj funkcję pomocniczą do formatowania godziny
+function formatHour(date) {
+  if (!date) return ''
+  const d = typeof date === 'string' ? new Date(date) : date
+  // Jeśli niepoprawna data, zwróć pusty string
+  if (isNaN(d.getTime())) return ''
+  return d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })
 }
 
 // Open rental history modal
@@ -901,6 +953,8 @@ function openRentalHistory() {
 // Select office function
 function selectOffice(office) {
   selectedOffice.value = office
+  fetchOfficeReservations(office.id)
+  fetchTimeSlots(office.id) // Dodaj to, aby sloty były zawsze aktualne dla biura
   // Scroll to details section with form
   setTimeout(() => {
     const detailsSection = document.querySelector('#office-details-section')
@@ -919,9 +973,12 @@ async function rentOffice() {
     showLoginModal.value = true
     return
   }
-  
-  if (selectedOffice.value && !selectedOffice.value.isRented) {
-    // Pokaż kalendarz do wyboru daty
+  if (selectedOffice.value) {
+    await fetchOfficeReservations(selectedOffice.value.id)
+    await fetchTimeSlots(selectedOffice.value.id)
+    selectedSlotIndex.value = null
+    recurring.value = false
+    recurringDays.value = 2
     showRentalCalendar.value = true
     return
   }
@@ -929,38 +986,19 @@ async function rentOffice() {
 
 // Confirm rental with date range
 async function confirmRental() {
-  if (!selectedOffice.value || !selectedDateRange.value.start || !selectedDateRange.value.end) return
+  if (!selectedOffice.value || selectedSlotIndex.value === null) return
 
   try {
-    // Wysyłaj tylko godziny jako pola start_time i end_time (zgodnie z backendem)
-    const startTime = selectedDateRange.value.start
-    const endTime = selectedDateRange.value.end
-
     const response = await axios.post(`/api/offices/${selectedOffice.value.id}/rent`, {
-      start_time: startTime,
-      end_time: endTime
-    })
-    
-    // Aktualizuj status biura
-    selectedOffice.value.isRented = true
-    const officeIndex = offices.value.findIndex(o => o.id === selectedOffice.value.id)
-    if (officeIndex !== -1) {
-      offices.value[officeIndex].isRented = true
-    }
-    userOffices.value.push(selectedOffice.value.id)
-    userRentalHistory.value.push({
-      id: Date.now(),
-      officeId: selectedOffice.value.id,
-      startDate: startTime,
-      endDate: endTime,
-      status: 'active',
-      price: selectedOffice.value.price || 2000
+      slot_index: selectedSlotIndex.value,
+      recurring: recurring.value,
+      days: recurring.value ? recurringDays.value : 1
     })
     showRentalCalendar.value = false
     showSuccessModal.value = true
+    await fetchOfficeReservations(selectedOffice.value.id) // Dodaj await, aby odświeżyć rezerwacje po wynajmie
   } catch (error) {
-    console.error('Błąd wynajmowania biura:', error)
-    alert('Wystąpił błąd podczas wynajmowania biura. Spróbuj ponownie.')
+    alert(error.response?.data?.message || 'Wystąpił błąd podczas rezerwacji.')
   }
 }
 
@@ -972,6 +1010,7 @@ async function endRentalEarly(rentalId) {
     
     if (rentalIndex !== -1) {
       // Aktualizuj status najmu
+
       userRentalHistory.value[rentalIndex].status = 'completed'
       userRentalHistory.value[rentalIndex].endDate = new Date().toISOString().split('T')[0]
       
@@ -1151,6 +1190,7 @@ async function checkAuth() {
 onMounted(() => {
   checkAuth()
   fetchOffices()
+  fetchTimeSlots(offices.value[0]?.id || 1) // domyślnie dla pierwszego biura
 })
 
 // Watch for login state changes to fetch user offices

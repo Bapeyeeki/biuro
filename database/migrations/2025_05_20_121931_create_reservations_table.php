@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('office_id')->constrained()->onDelete('cascade');
-            $table->date('start_date');
-            $table->date('end_date')->nullable();
+            $table->dateTime('start_date'); // zmiana z date() na dateTime()
+            $table->dateTime('end_date')->nullable(); // zmiana z date() na dateTime()
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

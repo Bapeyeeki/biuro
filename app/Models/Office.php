@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Reservation;
 
 class Office extends Model
 {
@@ -41,6 +42,8 @@ class Office extends Model
 
     /**
      * Get the reservations for the office.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function reservations(): HasMany
     {
