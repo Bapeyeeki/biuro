@@ -517,16 +517,28 @@
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-1">Imię i nazwisko</label>
-                <input type="text" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Jan Kowalski" required />
+                <input 
+                  v-model="registerData.name"
+                  type="text" 
+                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                  placeholder="Jan Kowalski" 
+                  required 
+                />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                <input type="email" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="twoj@email.com" required />
+                <input 
+                  v-model="registerData.email"
+                  type="email" 
+                  class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                  placeholder="twoj@email.com" 
+                  required 
+                />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-1">Hasło</label>
                 <input 
-                  v-model="password" 
+                  v-model="registerData.password" 
                   type="password" 
                   class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                   placeholder="••••••••" 
@@ -536,7 +548,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-1">Powtórz hasło</label>
                 <input 
-                  v-model="confirmPassword" 
+                  v-model="registerData.password_confirmation" 
                   @input="checkPasswordsMatch" 
                   type="password" 
                   class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
@@ -753,7 +765,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            Wybierz termin wynajmu
+            Wybierz godziny wynajmu
           </h3>
           <button @click="showRentalCalendar = false" class="text-gray-400 hover:text-white">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -764,38 +776,35 @@
         <div class="p-6">
           <div class="mb-6">
             <h4 class="text-lg font-medium text-white mb-2">{{ selectedOffice?.name }}</h4>
-            <p class="text-gray-400 text-sm">Wybierz datę rozpoczęcia i opcjonalnie datę zakończenia najmu.</p>
+            <p class="text-gray-400 text-sm">Wybierz godzinę rozpoczęcia i zakończenia najmu (tego samego dnia).</p>
           </div>
-          
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-1">Data rozpoczęcia *</label>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Godzina rozpoczęcia *</label>
               <input 
                 v-model="selectedDateRange.start" 
-                type="date" 
+                type="time" 
                 class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                :min="new Date().toISOString().split('T')[0]"
                 required 
               />
             </div>
-            
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-1">Data zakończenia (opcjonalnie)</label>
+              <label class="block text-sm font-medium text-gray-300 mb-1">Godzina zakończenia *</label>
               <input 
                 v-model="selectedDateRange.end" 
-                type="date" 
+                type="time" 
                 class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                :min="selectedDateRange.start || new Date().toISOString().split('T')[0]"
+                :min="selectedDateRange.start"
+                required 
               />
-              <p class="text-xs text-gray-400 mt-1">Pozostaw puste dla wynajmu bezterminowego.</p>
+              <p class="text-xs text-gray-400 mt-1">Wynajem dotyczy wybranego dnia.</p>
             </div>
-            
             <div class="pt-4">
               <button 
                 @click="confirmRental" 
                 class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
-                :disabled="!selectedDateRange.start"
-                :class="{'opacity-50 cursor-not-allowed': !selectedDateRange.start}"
+                :disabled="!selectedDateRange.start || !selectedDateRange.end"
+                :class="{'opacity-50 cursor-not-allowed': !selectedDateRange.start || !selectedDateRange.end}"
               >
                 Potwierdź wynajem
               </button>
@@ -856,6 +865,8 @@ const showRentalHistoryModal = ref(false)
 async function fetchOffices() {
   try {
     const response = await axios.get('/api/offices')
+    // Dodaj logowanie do debugowania
+    console.log('Pobrane biura:', response.data)
     // Map API response to match our frontend structure
     offices.value = response.data.map(office => ({
       id: office.id,
@@ -869,6 +880,12 @@ async function fetchOffices() {
       price: office.price,
       amenities: office.amenities || []
     }))
+    // Dodaj logowanie współrzędnych
+    offices.value.forEach(o => {
+      if (o.x == null || o.y == null) {
+        console.warn('Biuro bez współrzędnych:', o)
+      }
+    })
   } catch (error) {
     console.error('Błąd pobierania biur:', error)
   }
@@ -987,41 +1004,33 @@ async function rentOffice() {
 
 // Confirm rental with date range
 async function confirmRental() {
-  if (!selectedOffice.value || !selectedDateRange.value.start) return
-  
+  if (!selectedOffice.value || !selectedDateRange.value.start || !selectedDateRange.value.end) return
+
   try {
-    // W rzeczywistej aplikacji wysłalibyśmy te dane do API
-    const startDate = selectedDateRange.value.start
-    const endDate = selectedDateRange.value.end || null
-    
+    // Wysyłaj tylko godziny jako pola start_time i end_time (zgodnie z backendem)
+    const startTime = selectedDateRange.value.start
+    const endTime = selectedDateRange.value.end
+
     const response = await axios.post(`/api/offices/${selectedOffice.value.id}/rent`, {
-      start_date: startDate,
-      end_date: endDate
+      start_time: startTime,
+      end_time: endTime
     })
     
     // Aktualizuj status biura
     selectedOffice.value.isRented = true
-    
-    // Aktualizuj listę biur
     const officeIndex = offices.value.findIndex(o => o.id === selectedOffice.value.id)
     if (officeIndex !== -1) {
       offices.value[officeIndex].isRented = true
     }
-    
-    // Dodaj biuro do listy biur użytkownika
     userOffices.value.push(selectedOffice.value.id)
-    
-    // Dodaj do historii wynajmów
     userRentalHistory.value.push({
-      id: Date.now(), // Tymczasowe ID
+      id: Date.now(),
       officeId: selectedOffice.value.id,
-      startDate: startDate,
-      endDate: endDate,
+      startDate: startTime,
+      endDate: endTime,
       status: 'active',
       price: selectedOffice.value.price || 2000
     })
-    
-    // Zamknij kalendarz i pokaż komunikat o sukcesie
     showRentalCalendar.value = false
     showSuccessModal.value = true
   } catch (error) {
@@ -1141,20 +1150,23 @@ function resetPassword() {
 
 // Check if passwords match
 function checkPasswordsMatch() {
-  passwordsMatch.value = password.value === confirmPassword.value
+  passwordsMatch.value = registerData.value.password === registerData.value.password_confirmation
   return passwordsMatch.value
 }
 
 // Register function
 async function register() {
-try {
-  const response = await axios.post('/api/register', registerData.value)
-  console.log('Zarejestrowano:', response.data)
-  showRegisterModal.value = false
-  showRegistrationSuccessModal.value = true
-} catch (error) {
-  console.error('Błąd rejestracji:', error.response?.data || error.message)
-}
+  try {
+    const response = await axios.post('/api/register', registerData.value)
+    console.log('Zarejestrowano:', response.data)
+    showRegisterModal.value = false
+    showRegistrationSuccessModal.value = true
+    // Resetuj formularz rejestracji
+    registerData.value = { name: '', email: '', password: '', password_confirmation: '' }
+  } catch (error) {
+    console.error('Błąd rejestracji:', error.response?.data || error.message)
+    alert('Błąd rejestracji: ' + (error.response?.data?.message || error.message))
+  }
 }
 
 // Watch modals to toggle body scroll
@@ -1233,6 +1245,8 @@ watch(showRegistrationSuccessModal, watchModals)
 // Watch for password changes
 watch(password, checkPasswordsMatch)
 watch(confirmPassword, checkPasswordsMatch)
+watch(() => registerData.value.password, checkPasswordsMatch)
+watch(() => registerData.value.password_confirmation, checkPasswordsMatch)
 </script>
 
 <style>

@@ -38,14 +38,21 @@ class OfficeController extends Controller
 
         // Walidacja danych
         $validated = $request->validate([
-            'start_date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
         ]);
+
+        // Złóż pełną datę z dzisiejszym dniem
+        $today = now()->format('Y-m-d');
+        $startDate = $today . ' ' . $validated['start_time'] . ':00';
+        $endDate = $today . ' ' . $validated['end_time'] . ':00';
 
         // Utwórz rezerwację
         $reservation = new Reservation([
             'user_id' => Auth::id(),
             'office_id' => $office->id,
-            'start_date' => $validated['start_date'],
+            'start_date' => $startDate,
+            'end_date' => $endDate,
             'is_active' => true,
         ]);
         $reservation->save();
@@ -98,12 +105,13 @@ class OfficeController extends Controller
     public function userOffices()
     {
         $user = Auth::user();
-        $activeReservations = $user->activeReservations();
-        $offices = [];
-
-        foreach ($activeReservations as $reservation) {
-            $offices[] = $reservation->office;
+        if (!$user) {
+            return response()->json(['message' => 'Nie jesteś zalogowany'], 401);
         }
+        // Pobierz aktywne rezerwacje użytkownika
+        $offices = \App\Models\Office::whereHas('reservations', function($q) use ($user) {
+            $q->where('user_id', $user->id)->where('is_active', true);
+        })->get();
 
         return response()->json($offices);
     }
