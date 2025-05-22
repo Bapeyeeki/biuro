@@ -31,8 +31,11 @@ class OfficeController extends Controller
      */
     public function rent(Request $request, Office $office)
     {
-        // Sprawdź, czy biuro jest już wynajęte
-        if ($office->is_rented) {
+        $user = Auth::user();
+        $isAdmin = $user && ($user->email === 'admin@arris.pl' || $user->email === 'admin@test.pl');
+
+        // Sprawdź, czy biuro jest już wynajęte (admin może wynająć każde biuro)
+        if ($office->is_rented && !$isAdmin) {
             return response()->json(['message' => 'To biuro jest już wynajęte'], 400);
         }
 
@@ -57,9 +60,11 @@ class OfficeController extends Controller
         ]);
         $reservation->save();
 
-        // Oznacz biuro jako wynajęte
-        $office->is_rented = true;
-        $office->save();
+        // Oznacz biuro jako wynajęte (chyba że admin - wtedy nie zmieniaj statusu)
+        if (!$isAdmin) {
+            $office->is_rented = true;
+            $office->save();
+        }
 
         return response()->json([
             'message' => 'Biuro zostało pomyślnie wynajęte',
@@ -73,23 +78,28 @@ class OfficeController extends Controller
      */
     public function release(Office $office)
     {
-        // Sprawdź, czy biuro jest wynajęte
-        if (!$office->is_rented) {
+        $user = Auth::user();
+        $isAdmin = $user && ($user->email === 'admin@arris.pl' || $user->email === 'admin@test.pl');
+
+        // Sprawdź, czy biuro jest wynajęte (admin może zwolnić każde biuro)
+        if (!$office->is_rented && !$isAdmin) {
             return response()->json(['message' => 'To biuro nie jest wynajęte'], 400);
         }
 
-        // Sprawdź, czy użytkownik jest właścicielem rezerwacji
+        // Sprawdź, czy użytkownik jest właścicielem rezerwacji lub adminem
         $reservation = $office->activeReservation();
-        if (!$reservation || $reservation->user_id !== Auth::id()) {
+        if (!$isAdmin && (!$reservation || $reservation->user_id !== Auth::id())) {
             return response()->json(['message' => 'Nie masz uprawnień do zwolnienia tego biura'], 403);
         }
 
-        // Zakończ rezerwację
-        $reservation->is_active = false;
-        $reservation->end_date = now();
-        $reservation->save();
+        // Zakończ rezerwację (jeśli istnieje)
+        if ($reservation) {
+            $reservation->is_active = false;
+            $reservation->end_date = now();
+            $reservation->save();
+        }
 
-        // Oznacz biuro jako dostępne
+        // Oznacz biuro jako dostępne (admin może wymusić)
         $office->is_rented = false;
         $office->save();
 
@@ -108,10 +118,17 @@ class OfficeController extends Controller
         if (!$user) {
             return response()->json(['message' => 'Nie jesteś zalogowany'], 401);
         }
-        // Pobierz aktywne rezerwacje użytkownika
-        $offices = \App\Models\Office::whereHas('reservations', function($q) use ($user) {
-            $q->where('user_id', $user->id)->where('is_active', true);
-        })->get();
+        $isAdmin = $user->email === 'admin@arris.pl' || $user->email === 'admin@test.pl';
+
+        // Admin widzi wszystkie biura jako swoje
+        if ($isAdmin) {
+            $offices = \App\Models\Office::all();
+        } else {
+            // Pobierz aktywne rezerwacje użytkownika
+            $offices = \App\Models\Office::whereHas('reservations', function($q) use ($user) {
+                $q->where('user_id', $user->id)->where('is_active', true);
+            })->get();
+        }
 
         return response()->json($offices);
     }

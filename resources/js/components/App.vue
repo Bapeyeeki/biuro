@@ -106,43 +106,6 @@
                   </div>
                 </div>
               </div>
-              
-              <div>
-                <div class="bg-gray-900/60 p-6 rounded-lg border border-gray-700">
-                  <h3 class="text-lg font-medium text-white mb-4">Twoje biura</h3>
-                  <div v-if="userOffices.length > 0" class="space-y-4">
-                    <div v-for="officeId in userOffices" :key="officeId" class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                      <div class="flex justify-between items-center mb-2">
-                        <h4 class="font-medium text-white">{{ getOfficeById(officeId)?.name }}</h4>
-                        <span class="bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded-full text-xs">Wynajęte</span>
-                      </div>
-                      <div class="text-sm text-gray-400 mb-2">
-                        <div class="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5" />
-                          </svg>
-                          {{ getOfficeById(officeId)?.size }} m²
-                        </div>
-                      </div>
-                      <button @click="selectOfficeById(officeId)" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-md transition duration-300 text-sm">
-                        Szczegóły
-                      </button>
-                    </div>
-                  </div>
-                  <div v-else class="text-center py-8">
-                    <div class="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mx-auto mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <h4 class="text-xl font-medium text-blue-400 mb-2">Brak wynajętych biur</h4>
-                    <p class="text-gray-400 text-sm mb-4">Nie masz jeszcze wynajętych biur. Przeglądaj dostępne biura poniżej.</p>
-                    <button @click="scrollToOffices" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 w-full">
-                      Przeglądaj biura
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -255,18 +218,6 @@
                   </div>
                 </div>
               </div>
-              
-              <div class="mb-6">
-                <h3 class="text-lg font-medium text-gray-300 mb-2">Wyposażenie</h3>
-                <div class="grid grid-cols-2 gap-2">
-                  <div v-for="(available, index) in selectedOffice.amenities" :key="index" class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                    <span>{{ available }}</span>
-                  </div>
-                </div>
-              </div>
             </div>
             
             <div>
@@ -328,65 +279,37 @@
             </div>
           </div>
         </div>
-
-        <!-- Available offices grid -->
-        <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 overflow-hidden available-offices-section">
-          <div class="p-6 border-b border-gray-700">
-            <h2 class="text-2xl font-bold text-white flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-              Lista biur
-            </h2>
-          </div>
-          <div class="p-6">
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div 
-                v-for="office in offices" 
-                :key="office.id"
-                class="bg-gray-900/60 rounded-lg border border-gray-700 overflow-hidden hover:border-blue-500 transition duration-300 cursor-pointer"
-                @click="selectOffice(office)"
-              >
-                <div class="p-5">
-                  <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-bold text-white">{{ office.name }}</h3>
-                    <div :class="office.isRented ? 'bg-red-600/20 text-red-400' : 'bg-emerald-600/20 text-emerald-400'" class="px-2 py-1 rounded-full text-xs font-medium">
-                      {{ office.isRented ? 'Zajęte' : 'Dostępne' }}
-                    </div>
-                  </div>
-                  <div class="space-y-2 text-sm">
-                    <div class="flex items-center text-gray-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5" />
-                      </svg>
-                      <span>{{ office.size }} m²</span>
-                    </div>
-                    <div class="flex items-center text-gray-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                      <span>Do {{ office.capacity }} osób</span>
-                    </div>
-                    <div class="flex items-center text-gray-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span>{{ office.price }} PLN/miesiąc</span>
-                    </div>
-                  </div>
-                  <div class="mt-4 pt-4 border-t border-gray-700">
-                    <button @click="selectOffice(office)" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 border border-gray-700">
-                      {{ office.isRented ? 'Zobacz szczegóły' : 'Sprawdź dostępność' }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
 
+        <!-- Sekcja FAQ -->
+        <section class="max-w-7xl mx-auto my-12 px-6 flex justify-center">
+      <div class="w-full max-w-3xl">
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center justify-center">
+          Najczęściej zadawane pytania (FAQ)
+        </h2>
+        <div class="space-y-4">
+          <details class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <summary class="cursor-pointer font-medium text-white">Jak mogę wynająć biuro?</summary>
+            <p class="text-gray-300 mt-2">Aby wynająć biuro, należy się zarejestrować i zalogować, a następnie wybrać dostępne biuro i kliknąć "Wynajmij biuro".</p>
+          </details>
+          <details class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <summary class="cursor-pointer font-medium text-white">Czy mogę zakończyć najem wcześniej?</summary>
+            <p class="text-gray-300 mt-2">Tak, w panelu użytkownika możesz zakończyć najem aktywnego biura w dowolnym momencie.</p>
+          </details>
+          <details class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <summary class="cursor-pointer font-medium text-white">Jakie udogodnienia są dostępne w biurach?</summary>
+            <p class="text-gray-300 mt-2">Każde biuro posiada indywidualny zestaw udogodnień, takich jak internet światłowodowy, klimatyzacja, kuchnia, sala konferencyjna i inne. Szczegóły znajdziesz w opisie biura.</p>
+          </details>
+          <details class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <summary class="cursor-pointer font-medium text-white">Jak mogę się skontaktować w sprawie pytań?</summary>
+            <p class="text-gray-300 mt-2">Możesz napisać na adres kontakt@arris.pl lub zadzwonić pod numer +48 691 661 859.</p>
+          </details>
+        </div>
+      </div>
+      
+    </section>
+    <br><br>
     <!-- Footer -->
     <footer class="bg-black/70 py-8 mt-12 border-t border-gray-800">
       <div class="max-w-7xl mx-auto px-6">
@@ -452,6 +375,8 @@
         </div>
       </div>
     </footer>
+
+    <!-- Koniec strony -->
 
     <!-- Login Modal -->
     <div v-if="showLoginModal" class="modal-backdrop">
@@ -1050,7 +975,7 @@ async function endRentalEarly(rentalId) {
       userRentalHistory.value[rentalIndex].status = 'completed'
       userRentalHistory.value[rentalIndex].endDate = new Date().toISOString().split('T')[0]
       
-      // Jeśli to aktualnie wynajęte biuro, zaktualizuj jego status
+      // Jeśli to aktualizowane wynajęte biuro, zaktualizuj jego status
       const officeId = userRentalHistory.value[rentalIndex].officeId
       const officeIndex = offices.value.findIndex(o => o.id === officeId)
       
@@ -1703,9 +1628,6 @@ background-color: #1f2937;
 border-radius: 0.5rem;
 box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 max-width: 400px;
-width: 100%;
-border: 1px solid #374151;
-overflow: hidden;
 }
 
 .modal-header {
@@ -2012,5 +1934,4 @@ background-color: white !important;
 border: 1px solid #4B5563 !important;
 border-radius: 0.25rem !important;
 }
-
 </style>
