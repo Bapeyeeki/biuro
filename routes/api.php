@@ -9,6 +9,8 @@ Route::post('/register', [AuthController::class, 'register']); // Rejestracja u�
 Route::post('/login', [AuthController::class, 'login']);       // Logowanie użytkownika
 Route::get('/offices', [OfficeController::class, 'index']);    // Pobranie wszystkich biur
 Route::get('/offices/{office}', [OfficeController::class, 'show']); // Pobranie konkretnego biura
+Route::get('/offices/timeslots', [OfficeController::class, 'timeSlots']); // Sloty godzinowe
+Route::get('/offices/{office}/timeslots', [OfficeController::class, 'officeTimeSlots']); // Sloty godzinowe dla biura
 
 // Trasy chronione (wymagają uwierzytelnienia przez sesję)
 Route::middleware('auth')->group(function () {
@@ -17,4 +19,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/offices/{office}/rent', [OfficeController::class, 'rent']); // Wynajęcie biura
     Route::post('/offices/{office}/release', [OfficeController::class, 'release']); // Zwolnienie biura
     Route::get('/user/offices', [OfficeController::class, 'userOffices']); // Pobranie biur użytkownika
+    Route::get('/offices/{office}/reservations', [OfficeController::class, 'reservations']); // Rezerwacje biura na dziś
 });

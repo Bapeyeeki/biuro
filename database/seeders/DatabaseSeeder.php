@@ -25,6 +25,13 @@ class DatabaseSeeder extends Seeder
             'email' => 'anna@example.com',
             'password' => bcrypt('password'),
         ]);
+
+        // Dodaj użytkownika admin (test)
+        User::factory()->create([
+            'name' => 'admin',
+            'email' => 'admin@test.pl',
+            'password' => bcrypt('admin1234'),
+        ]);
         
         // Wywołanie seedera biur
         $this->call(OfficeSeeder::class);
